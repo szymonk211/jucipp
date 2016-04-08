@@ -12,6 +12,7 @@ set(project_files
     juci.cc
     notebook.cc
     project.cc
+    python_interpreter.cc
     selection_dialog.cc
     terminal.cc
     tooltips.cc

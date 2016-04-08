@@ -51,11 +51,13 @@ else()
 endif()
 
 find_package(Boost 1.54 COMPONENTS system filesystem REQUIRED)
+find_package(PythonLibs 3 REQUIRED)
 find_package(ASPELL REQUIRED)
 include(FindPkgConfig)
 pkg_check_modules(GTKMM gtkmm-3.0 REQUIRED)
 pkg_check_modules(GTKSVMM gtksourceviewmm-3.0 REQUIRED)
 pkg_check_modules(LIBGIT2 libgit2 REQUIRED)
+pkg_check_modules(PYGOBJECT pygobject-3.0 REQUIRED)
 
 if(MSYS)
   set(global_libraries winpthread)
@@ -68,6 +70,8 @@ set(global_libraries ${global_libraries}
   ${LIBLLDB_LIBRARIES}
   ${ASPELL_LIBRARIES}
   ${LIBGIT2_LIBRARIES}
+  ${PYTHON_LIBRARIES}
+  ${PYGOBJECT_LIBRARIES}
   )
 
 set(global_includes
@@ -77,6 +81,9 @@ set(global_includes
    ${LIBCLANG_INCLUDE_DIRS}
    ${ASPELL_INCLUDE_DIR}
    ${LIBGIT2_INCLUDE_DIRS}
+   ${PYTHON_INCLUDE_DIRS}
+   ${PYGOBJECT_INCLUDE_DIRS}
+   ${PROJECT_SOURCE_DIR}/pybind11/include
    ${PROJECT_SOURCE_DIR}/libclangmm/src
    ${PROJECT_SOURCE_DIR}/tiny-process-library
    ${PROJECT_SOURCE_DIR}/src
