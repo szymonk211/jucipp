@@ -478,6 +478,8 @@ void Menu::set_keys() {
   }
 }
 
+Menu::Menu() : plugin_menu(nullptr) {}
+
 void Menu::build() {
   try {
     builder = Gtk::Builder::create_from_string(menu_xml);

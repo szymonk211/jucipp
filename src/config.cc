@@ -56,7 +56,7 @@ void Config::find_or_create_config_files() {
   auto config_json = config_dir/"config.json";
 
   boost::filesystem::create_directories(config_dir); // io exp captured by calling method
-  boost::filesystem::create_directories(home/"plugins");
+  boost::filesystem::create_directories(home_juci_path/"plugins");
 
   if (!boost::filesystem::exists(config_json))
     filesystem::write(config_json, default_config_file);
@@ -118,8 +118,8 @@ void Config::retrieve_config() {
     }
   }
 #endif
-  python.plugin_directory=cfg.get<std::string>("python.plugin_directory",(home/"plugins").string());
-  python.site_packages=cfg.get<std::string>("python.site_packages","/usr/lib/python3.5/site-packages");
+  python.plugin_directory=cfg.get<std::string>("python.plugin_directory",(home_juci_path/"plugins").string());
+  python.site_packages=cfg.get<std::string>("python.site_packages","");
 }
 
 bool Config::add_missing_nodes(const boost::property_tree::ptree &default_cfg, std::string parent_path) {
