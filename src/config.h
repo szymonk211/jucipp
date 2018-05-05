@@ -91,6 +91,8 @@ public:
     std::string clang_format_style;
     unsigned clang_usages_threads;
     
+    std::string header_guards;
+    
     std::unordered_map<std::string, DocumentationSearch> documentation_searches;
   };
 private:

@@ -11,6 +11,8 @@
 #include "selection_dialog.h"
 #include "terminal.h"
 
+#include <random>
+
 Window::Window() {
   set_title("juCi++");
   set_events(Gdk::POINTER_MOTION_MASK|Gdk::FOCUS_CHANGE_MASK|Gdk::SCROLL_MASK|Gdk::LEAVE_NOTIFY_MASK);
@@ -174,13 +176,39 @@ void Window::set_menu_actions() {
         Terminal::get().print("Error: "+path.string()+" already exists.\n", true);
       }
       else {
-        if(filesystem::write(path)) {
+        std::string file_content;
+        int cursor_line_on_start = 0;
+        if (path.extension() == ".h" || path.extension() == ".hpp") {
+          if (Config::get().source.header_guards == "pragma") {
+            file_content = "#pragma once\n\n";
+            cursor_line_on_start = 2;
+          }
+          else if (Config::get().source.header_guards == "guards") {
+            // generate some unique sequence for the header guard for protection from header guards conflict:
+            std::random_device rd;  //Will be used to obtain a seed for the random number engine
+            std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+            std::uniform_int_distribution<> dist(static_cast<int>('A'), static_cast<int>('Z'));        
+            std::string unique_seq;
+            for (size_t c = 0; c < static_cast<size_t>(5); ++c)
+              unique_seq.push_back(static_cast<char>(dist(gen)));
+            
+            auto filename_upper = path.filename().stem().string();
+            for (char & c : filename_upper)
+              c = std::toupper(c);
+            
+            auto guard = filename_upper + "_H_" + unique_seq;
+            file_content = "#ifndef " + guard + "\n#define " + guard + "\n\n\n\n" + "#endif /* " + guard + " */\n";
+            cursor_line_on_start = 3;
+          }
+        }
+        if(filesystem::write(path, file_content)) {
           if(Directories::get().path!="")
             Directories::get().update();
           Notebook::get().open(path);
           if(Directories::get().path!="")
             Directories::get().on_save_file(path);
           Terminal::get().print("New file "+path.string()+" created.\n");
+          Notebook::get().get_current_view()->place_cursor_at_line_index(cursor_line_on_start,0);
         }
         else
           Terminal::get().print("Error: could not create new file "+path.string()+".\n", true);

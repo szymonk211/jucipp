@@ -175,6 +175,7 @@ void Config::read(const boost::property_tree::ptree &cfg) {
   source.auto_reload_changed_files = source_json.get<bool>("auto_reload_changed_files");
   source.clang_format_style = source_json.get<std::string>("clang_format_style");
   source.clang_usages_threads = static_cast<unsigned>(source_json.get<int>("clang_usages_threads"));
+  source.header_guards = source_json.get<std::string>("header_guards");
   auto pt_doc_search=cfg.get_child("documentation_searches");
   for(auto &pt_doc_search_lang: pt_doc_search) {
     source.documentation_searches[pt_doc_search_lang.first].separator=pt_doc_search_lang.second.get<std::string>("separator");
